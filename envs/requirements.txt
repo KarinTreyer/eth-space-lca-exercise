@@ -1,0 +1,43 @@
+# ETH Space Systems - LCA exercise environment (Python 3.12)
+#
+# Versions are pinned to a combination that is known to start Activity Browser 3 without
+# Qt errors (tested on Windows, Nov 2026). Do not upgrade single packages:
+#   - bw2data 4.8 makes Activity Browser hang at startup  -> keep bw2data==4.7
+#   - PySide6 >= 6.12 is not supported by Activity Browser -> keep PySide6==6.11.2
+#
+# Install (from the repository root, inside a fresh environment):
+#   python -m pip install -r envs/requirements.txt
+
+# Brightway
+bw2data==4.7
+bw2calc==3.1.0
+bw2io==0.9.17
+bw2analyzer==0.11.8
+bw2parameters==1.1.0
+bw_processing==1.6
+matrix_utils==0.9
+stats_arrays==4.0
+bw-functional==0.1.0
+multifunctional==1.1.2
+randonneur==0.7.2
+randonneur_data==0.7.2
+pypardiso==0.4.7 ; platform_system == "Windows"
+
+# Activity Browser (graphical user interface)
+activity-browser==3.0.0b202610120209
+PySide6==6.11.2
+PySide6_Addons==6.11.2
+PySide6_Essentials==6.11.2
+QtPy==2.4.3
+
+# Scientific stack
+numpy==2.5.4
+scipy==1.18.1
+pandas==3.1.0
+matplotlib==3.11.2
+openpyxl==3.1.5
+xlsxwriter==3.3.0
+
+# Notebooks
+jupyterlab
+ipykernel

@@ -1,0 +1,16 @@
+# instructor material (solutions, build scripts) stays local - not for students
+instructor/
+
+# Python / Jupyter
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+
+# results and Office lock files
+results_*.xlsx
+~$*
+
+# Brightway project archive (ecoinvent / ESA licence - never commit)
+*.tar.gz
+*.tar

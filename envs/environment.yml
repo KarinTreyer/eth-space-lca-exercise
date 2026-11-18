@@ -1,0 +1,10 @@
+# conda env create -f envs/environment.yml   (run from the repository root)
+# Only Python comes from conda; everything else from pip, so that no conda Qt packages end up in the env.
+name: eth-lca
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pip
+  - pip:
+      - -r requirements.txt
