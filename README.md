@@ -9,7 +9,7 @@ framework [Brightway](https://docs.brightway.dev) and its graphical interface
 
 ## Before the course day
 
-1. Follow [docs/INSTALL.md](docs/INSTALL.md) (about 45 minutes).
+1. Follow [docs/INSTALL.md](docs/INSTALL.md).
 2. Run `notebooks/00_setup_check.ipynb` until it prints `All good`.
 3. Problems? [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md), then the TAs.
 

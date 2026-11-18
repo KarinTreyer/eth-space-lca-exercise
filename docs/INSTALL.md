@@ -69,4 +69,4 @@ without updating": press Enter and do NOT update.** The update would replace the
 
 The first start can take a minute. Select the project `eth_space_lca_2026` (drop-down at the top left) and search for "solar array" in the database `ESA_LCA_selection_e3.12`.
 
-If Activity Browser does not start, report the error message to karin.treyer@psi.ch . You can still do the whole exercise in the notebook.
+If Activity Browser does not start, report the error message to the TAs. You can still do the whole exercise in the notebook.
