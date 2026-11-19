@@ -16,6 +16,7 @@ Either `git clone https://github.com/KarinTreyer/eth-space-lca-exercise.git` or,
 [repository page](https://github.com/KarinTreyer/eth-space-lca-exercise), click *Code → Download ZIP* and unzip it.
 Open the prompt in the repository folder (the folder that contains `EXERCISE.md`).
 
+
 ## 3  Create the Python environment
 
 ### 3a  With Miniforge
@@ -38,7 +39,7 @@ python -m pip install -r envs/requirements.txt
 ```
 
 ## 4  Restore the course database (Brightway project)
-Download the project backup file `brightway2-project-eth_space_lca_2026-backup.tar.gz` (about 270 MB; 1.8 GB after restoring). 
+Download the project backup file `brightway2-project-eth_space_lca_2026-backup.tar.gz` (about 270 MB; 1.8 GB after restoring) from the lecture materials download page.
 !!! By downloading and using this file, you accept that you must not share the project and not use it other than for the purpose of this course and a dedicated project work in the spring semester. !!!
 Do not share it: it contains ecoinvent (ETH teaching licence) and 25 aggregated datasets of the ESA LCA database (names and elementary flows only - for legal reasons we cannot share the database itself).
 
@@ -67,6 +68,6 @@ activity-browser
 **If the terminal says "There is an update available for the Activity Browser ... Press any key to continue
 without updating": press Enter and do NOT update.** The update would replace the tested versions and Activity Browser would most likely no longer start.
 
-The first start can take a minute. Select the project `eth_space_lca_2026` (drop-down at the top left) and search for "solar array" in the database `ESA_LCA_selection_e3.12`.
+The first start can take a minute. Select the project `eth_space_lca_2026` (drop-down at the top left) and search e.g. for "solar array" in the database `ESA_LCA_selection_e3.12`.
 
 If Activity Browser does not start, report the error message to the TAs. You can still do the whole exercise in the notebook.
