@@ -195,7 +195,7 @@ change, look at the plots again.
 |---|---|---|
 | **Significant issues** (hotspots) | 5a, 5b | Which stage and which inventory lines dominate? Is the ranking the same for climate change and for resource use? |
 | **Data quality** | 5b (colours), 5c, 5d | Is the data behind the hotspots good enough? Or did you potentially miss a hotspot due to incomplete data/using a proxy? How did the contribution-weighted DQR of your stage change (before → after)? |
-| **Sensitivity** | 5f | Change at least one assumption or design choice with `what_if` (your own variant in the ✏️ cell). How much does the mission result change? |
+| **Sensitivity** | 5f (7a, 7b optional) | Change at least one assumption or design choice with `what_if` (your own variant in the ✏️ cell). How much does the mission result change? Optional: tornado chart of several assumptions (7a) and the mission lifetime as a parameter (7b). |
 | **Burden shifting** | 5f | Does your variant improve **all** impact categories, or does it shift the impact to another category or stage? |
 | **Completeness** | 5e | What is missing in the inventory or in the impact assessment? |
 | **Consistency** | - | Do you use the same assumptions as the other teams (functional unit, electricity mix, number of spacecraft)? Ask them. |
@@ -238,3 +238,7 @@ Good figures:
 
 Section 6 of the notebook: something is wrong with the ESA cleanroom dataset. Find out what, and estimate how
 large the error would have been if you had used it.
+
+Section 7 of the notebook: test your result as shown in the lecture - a tornado chart (which assumption moves the
+result most: a choice or a data uncertainty?) and the mission lifetime as a parameter (is a longer mission better
+or worse? it depends on the functional unit).

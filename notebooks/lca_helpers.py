@@ -19,6 +19,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from matplotlib.colors import LinearSegmentedColormap, Normalize
+from matplotlib.ticker import FuncFormatter
+
+THOUSANDS = FuncFormatter(lambda x, _: f"{x:,.0f}")
 
 FG = "firesat2"
 EI = "ecoinvent-3.12-cutoff"
@@ -105,10 +108,19 @@ def import_foreground(xlsx_path, db_name=FG):
     return imp
 
 
-def get_activity(name, db_name=FG):
-    hits = [a for a in bd.Database(db_name) if a["name"] == name]
+def get_activity(name, db_name=FG, location=None):
+    """One activity by exact name (and location, e.g. "CH", where a name exists for several regions)."""
+    def match(a):
+        return a["name"] == name and (location is None or a["location"] == location)
+
+    hits = []
+    if db_name == EI:  # large database: search first, then match exactly
+        hits = [a for a in bd.Database(db_name).search(name, limit=500) if match(a)]
+    if not hits:
+        hits = [a for a in bd.Database(db_name) if match(a)]
     if len(hits) != 1:
-        raise ValueError(f"{len(hits)} activities called {name!r} in {db_name}")
+        where = f" in location {location!r}" if location else ""
+        raise ValueError(f"{len(hits)} activities called {name!r}{where} in {db_name}")
     return hits[0]
 
 
@@ -381,7 +393,8 @@ def what_if(res, changes=(), add=(), name="variant"):
     new_ids = {ch["new"].id for ch in changes if ch.get("new") is not None} | {a.id for a, _ in add}
     missing = sorted(new_ids - set(res.unit_scores))
     extra = unit_scores_for(missing, res.methods)[0] if missing else {}
-    unit_scores = {**res.unit_scores, **extra}
+    res.unit_scores.update(extra)          # cache: the next what-if with the same activity needs no new calculation
+    unit_scores = res.unit_scores
     for ch in changes:
         mask = table.apply(ch["where"], axis=1)
         if not mask.any():
@@ -398,6 +411,91 @@ def what_if(res, changes=(), add=(), name="variant"):
         rows.append({"impact category": short(m), "unit": unit_of(m), "base": base, name: new,
                      "change %": 100 * (new - base) / base})
     return pd.DataFrame(rows)
+
+
+def scale(where, factor):
+    """Short form of a what-if that multiplies the matching lines by `factor`, for `sensitivity`."""
+    return {"changes": [{"where": where, "factor": factor}]}
+
+
+def sensitivity(res, method, params):
+    """One-at-a-time sensitivity analysis: data for a tornado chart.
+
+    `params` is a list of dicts with
+        label : text on the chart
+        low   : what-if arguments for the low end, e.g. scale(lambda r: ..., 0.5) or {"changes": [...], "add": [...]}
+        high  : the same for the high end (leave out a side to keep the base case there)
+    Returns one row per parameter: change of the total score vs. the base case at the low and high end.
+    """
+    base = res.contributions(method)["score"].sum()
+    rows = []
+    for p in params:
+        row = {"parameter": p["label"]}
+        for side in ("low", "high"):
+            spec = p.get(side)
+            if spec is None:
+                row[side] = 0.0
+                continue
+            t = what_if(res, name="variant", **spec)
+            row[side] = t.loc[t["impact category"] == short(method), "variant"].iloc[0] - base
+        rows.append(row)
+    df = pd.DataFrame(rows)
+    df["largest change %"] = df[["low", "high"]].abs().max(axis=1) / abs(base) * 100
+    df = df.sort_values("largest change %", ascending=False).reset_index(drop=True)
+    df.attrs.update(base=base, method=method)
+    return df
+
+
+def plot_tornado(sens, title=None):
+    """Tornado chart from `sensitivity`: largest effect on top, blue = low end, lavender = high end."""
+    method, base = sens.attrs["method"], sens.attrs["base"]
+    df = sens.iloc[::-1]
+    fig, ax = plt.subplots(figsize=(11, 0.5 * len(df) + 1.8))
+    ax.barh(df["parameter"], df["low"], color="#2B31AF", label="low end")
+    ax.barh(df["parameter"], df["high"], color="#B4B0FE", label="high end")
+    for y, (lo, hi) in enumerate(zip(df["low"], df["high"])):
+        for v in (lo, hi):
+            if v:
+                ax.annotate(f"{v:+,.0f}", (v, y), xytext=(4 if v > 0 else -4, 0), textcoords="offset points",
+                            ha="left" if v > 0 else "right", va="center", fontsize=9)
+    ax.axvline(0, color="black", linewidth=0.8)
+    ax.set_xlabel(f"change vs. base case [{unit_of(method)}]  (base: {base:,.0f})")
+    ax.set_title(title or f"Sensitivity of {short(method)} - one parameter at a time")
+    lo, hi = ax.get_xlim()
+    ax.set_xlim(lo * 1.15, hi * 1.15)
+    ax.xaxis.set_major_formatter(THOUSANDS)
+    ax.legend(loc="upper right")
+    plt.tight_layout()
+    plt.show()
+
+
+def lifetime_curve(res, method, per_year, years, lifetimes=range(4, 16)):
+    """Parametrisation example: how does the result change with the mission lifetime?
+
+    per_year : function(row) -> True for the inventory lines that grow with the years of operation
+    years    : the lifetime that is in the inventory now (e.g. 8)
+    Everything else is treated as fixed. Plots the impact per year of service and returns a table
+    with the impact per mission and per year for each lifetime.
+    """
+    c = res.contributions(method)
+    variable = c[c.apply(per_year, axis=1)]["score"].sum()
+    fixed = c["score"].sum() - variable
+    t = pd.DataFrame({"lifetime [years]": list(lifetimes)})
+    t["per mission"] = fixed + variable / years * t["lifetime [years]"]
+    t["per year of service"] = t["per mission"] / t["lifetime [years]"]
+    fig, ax = plt.subplots(figsize=(9, 5))
+    ax.plot(t["lifetime [years]"], t["per year of service"], marker="o", color="#2B31AF")
+    base = fixed / years + variable / years
+    ax.scatter([years], [base], s=120, color="#E36C0A", zorder=3, label=f"in the inventory: {years} years")
+    ax.set_ylim(0, t["per year of service"].max() * 1.1)
+    ax.yaxis.set_major_formatter(THOUSANDS)
+    ax.set_xlabel("mission lifetime [years]")
+    ax.set_ylabel(f"{unit_of(method)} per year of service")
+    ax.set_title(f"{short(method)}: fixed part {fixed:,.0f} / lifetime + {variable / years:,.0f} per year")
+    ax.legend()
+    plt.tight_layout()
+    plt.show()
+    return t.round(0)
 
 
 def export(res, path):
