@@ -40,7 +40,7 @@ python -m pip install -r envs/requirements.txt
 ## 4  Restore the course database (Brightway project)
 Download the project backup file `brightway2-project-eth_space_lca_2026-backup.tar.gz` (about 270 MB; 1.8 GB after restoring). 
 !!! By downloading and using this file, you accept that you must not share the project and not use it other than for the purpose of this course and a dedicated project work in the spring semester. !!!
-Do not share it: it contains ecoinvent (ETH teaching licence) and a selection of the ESA LCA database (which requires a valid ecoinvent license).
+Do not share it: it contains ecoinvent (ETH teaching licence) and 25 aggregated datasets of the ESA LCA database (names and elementary flows only - for legal reasons we cannot share the database itself).
 
 With the environment activated:
 

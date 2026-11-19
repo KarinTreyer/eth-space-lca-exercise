@@ -43,7 +43,7 @@ And you have worked with the ESA LCA Handbook.
 |---|---|
 | `notebooks/01_firesat_lca.ipynb` | Import, calculation, all plots. Run it top to bottom ("Run All"), then look at it. You only need to write code in the cells marked ✏️. `lca_helpers.py` contains the plotting functions - you do not need to read it. |
 | `data/FireSat2_LCI.xlsx` | **The file your team edits.** Sheets: `goal_scope` (your goal and scope), `lci` (the inventory), `mass_budget` (SMAD numbers), `dqr_guide` (how to rate data quality). |
-| Activity Browser | Brightway GUI. Finding datasets, reading their documentation (comment field), looking at their supply chain (graph explorer). Copy names, reference products, locations and units from here into the Excel. The calculation runs in the notebook. You can also play around in AB to see results if you find time. |
+| Activity Browser | Brightway GUI. Finding datasets, reading their documentation (comment field), looking at their supply chain (graph explorer) - for ecoinvent datasets. The 25 ESA datasets are aggregated for legal reasons: you see their names and can calculate with them, but not their content (see README). Copy names, reference products, locations and units from here into the Excel. The calculation runs in the notebook. You can also play around in AB to see results if you find time. |
 | ESA LCA Handbook (ESSB-HB-U-005, Issue 2, Dec 2025) | ISO-based LCA rules tailored to space LCA. See the section list below. |
 | FireSat II Mission Briefing / SMAD | Masses, power, orbit, mission duration. |
 | Literature, user's guides, AI | Launcher user's guides, test facility data sheets, papers, e.g. the DLR *Inventory of Global Emissions by Launchers 2024* (Herberhold et al. 2026) for launch emissions per kg of propellant. |
@@ -145,7 +145,8 @@ improvements as you have limited time.
    Activity Browser or from `h.search("...")` in the notebook. You can also add lines or whole activities
    (copy an existing activity block as template).
 3. **Read the dataset's documentation** (comment field in Activity Browser) before you use it. Check its unit:
-   per kg, per unit, per hour, per year?
+   per kg, per unit, per hour, per year? For the aggregated ESA datasets you only have name, unit and location:
+   check the unit, and calculate the score of 1 unit - is it plausible?
 4. Rate the line: `dqr_amount`, `dqr_activity`, `dqr_background_ds` (sheet `dqr_guide`).
 5. Describe where the number comes from in `source`, and your assumptions and calculation in `comment`. 
     Or add the raw data in sheet "raw data" and link to that original cell
